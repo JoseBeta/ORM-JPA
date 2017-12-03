@@ -20,7 +20,24 @@ public class Pilotadores {
 	
 	public static void main(String [] args)
 	{
-		buscar("Gran Canaria", "Madrid", encontrarUsuario("2"));
+
+		prueba();
+	}
+	
+	public static void prueba() {
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
+		EntityManager em = emf.createEntityManager();
+		try {
+			Busqueda busqueda = em.find(Busqueda.class, 10);
+			for(int i=0;i<busqueda.getUsuarios().size();i++) {
+				System.out.println(busqueda.getUsuarios().get(i).getNombre());
+			}
+		}catch(Exception e){
+			System.out.println("error "+e.getMessage());
+		}finally {
+			em.close();
+			emf.close();
+		}
 	}
 	
 	public static void registrarse(String fecha, String pass, String nombre) {
@@ -47,20 +64,18 @@ public class Pilotadores {
 		}
 	}
 	
-	public static void buscar(String origen, String destino, Usuario user){
+	public static void buscar(String origen, String destino){
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
-		List<Usuario> usuarios;
 		try {
 			Busqueda busqueda = new Busqueda();
 			busqueda.setSalida(origen);
 			busqueda.setDestino(destino);
 			
-			em.getTransaction().begin();	
+			em.getTransaction().begin();
 			
-			usuarios = busqueda.getUsuarios();
-			usuarios.add(user);
-			busqueda.setUsuarios(usuarios);
+			Usuario user= em.find(Usuario.class, 1);
+			busqueda.getUsuarios().add(user);
 			
 			em.persist(busqueda);
 			em.getTransaction().commit();

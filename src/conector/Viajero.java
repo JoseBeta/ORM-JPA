@@ -2,6 +2,8 @@ package conector;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class Viajero implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private String dni;
@@ -38,7 +41,7 @@ public class Viajero implements Serializable {
 			@JoinColumn(name="ReservaID")
 			}
 		)
-	private List<Reserva> reservas;
+	private List<Reserva> reservas= new ArrayList<Reserva>();
 
 	public Viajero() {
 	}

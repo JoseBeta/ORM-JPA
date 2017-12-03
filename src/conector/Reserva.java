@@ -2,6 +2,8 @@ package conector;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,6 +17,7 @@ public class Reserva implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private float precioPagado;
@@ -31,7 +34,7 @@ public class Reserva implements Serializable {
 
 	//bi-directional many-to-many association to Viajero
 	@ManyToMany(mappedBy="reservas")
-	private List<Viajero> viajeros;
+	private List<Viajero> viajeros= new ArrayList<Viajero>();
 
 	public Reserva() {
 	}

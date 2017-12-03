@@ -2,6 +2,8 @@ package conector;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,11 +29,11 @@ public class Aeropuerto implements Serializable {
 
 	//bi-directional many-to-one association to Vuelo
 	@OneToMany(mappedBy="aeropuerto1")
-	private List<Vuelo> vuelos1;
+	private List<Vuelo> vuelos1= new ArrayList<Vuelo>();
 
 	//bi-directional many-to-one association to Vuelo
 	@OneToMany(mappedBy="aeropuerto2")
-	private List<Vuelo> vuelos2;
+	private List<Vuelo> vuelos2= new ArrayList<Vuelo>();
 
 	public Aeropuerto() {
 	}

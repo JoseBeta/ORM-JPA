@@ -2,6 +2,8 @@ package conector;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,11 +32,11 @@ public class Usuario implements Serializable {
 
 	//bi-directional many-to-many association to Busqueda
 	@ManyToMany(mappedBy="usuarios")
-	private List<Busqueda> busquedas;
+	private List<Busqueda> busquedas= new ArrayList<Busqueda>();
 
 	//bi-directional many-to-one association to Reserva
 	@OneToMany(mappedBy="usuario")
-	private List<Reserva> reservas;
+	private List<Reserva> reservas= new ArrayList<Reserva>();
 
 	public Usuario() {
 	}
