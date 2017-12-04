@@ -33,14 +33,14 @@ public class Viajero implements Serializable {
 	//bi-directional many-to-many association to Reserva
 	@ManyToMany
 	@JoinTable(
-		name="viajero_reserva"
-		, joinColumns={
-			@JoinColumn(name="ViajeroID")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="ReservaID")
-			}
-		)
+			name="viajero_reserva"
+			, joinColumns={
+				@JoinColumn(name="ViajeroID")
+				}
+			, inverseJoinColumns={
+				@JoinColumn(name="ReservaID")
+				}
+			)
 	private List<Reserva> reservas= new ArrayList<Reserva>();
 
 	public Viajero() {
