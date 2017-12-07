@@ -13,7 +13,10 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u")
+@NamedQueries({
+	@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u"),
+	@NamedQuery(name="Usuario.findByNombreYContrasena", query="SELECT u FROM Usuario u WHERE u.nombre=?1 AND u.contrasena=?2")
+})
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 

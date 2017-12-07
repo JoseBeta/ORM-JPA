@@ -1,34 +1,33 @@
 package pilotadores;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import conector.Reserva;
-import conector.Usuario;
-import conector.Viajero;
+import conector.Aeropuerto;
 import conector.Vuelo;
 
-public class Reservar {
+public class GestionarVuelos {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public static void reservar(Usuario user, Vuelo vuelo) {
+	public static void nuevoVuelo(String fecha, float precio,Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoLlegada) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
 		
 		try {
-			Reserva reserva = new Reserva();
-			reserva.setPrecioPagado(vuelo.getPrecio());
-			reserva.setUsuario(user);
-			reserva.setVuelo(vuelo);
+			Vuelo vuelo = new Vuelo();
+			Date date = sdf.parse(fecha);
+			vuelo.setFecha(date);
+			vuelo.setPrecio(precio);
+			vuelo.setAeropuerto1(aeropuertoSalida);
+			vuelo.setAeropuerto2(aeropuertoLlegada);
+
 			
 			em.getTransaction().begin();
-			em.persist(reserva);
+			em.persist(precio);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();
@@ -39,15 +38,19 @@ public class Reservar {
 		}
 	}
 	
-	public static void addViajero(Viajero viajero, Reserva reserva) {
+	public static void cambiarFechaVuelo(Vuelo vuelo, String fecha) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
 		
 		try {
-			viajero.getReservas().add(reserva);
+			if(!fecha.equals("")) {
+				Date date = sdf.parse(fecha);
+				vuelo.setFecha(date);
+			}
+
 			
 			em.getTransaction().begin();
-			em.merge(viajero);
+			em.merge(vuelo);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();
@@ -58,15 +61,16 @@ public class Reservar {
 		}
 	}
 	
-	public static void cambiarVuelo(Reserva reserva, Vuelo vuelo) {
+	public static void cambiarPrecioVuelo(Vuelo vuelo, float precio) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
 		
 		try {
-			reserva.setVuelo(vuelo);
+			vuelo.setPrecio(precio);
+
 			
 			em.getTransaction().begin();
-			em.merge(reserva);
+			em.merge(vuelo);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();
@@ -77,31 +81,17 @@ public class Reservar {
 		}
 	}
 	
-	public static void modificarViajero(Reserva reserva, int viajeroACambiar, String dni, String fNacimiento, String nombre, int numAsiento) {
+	public static void cambiarAeropuertosVuelo(Vuelo vuelo, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoLlegada) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
-		List<Viajero> viajeros = reserva.getViajeros();
-		Viajero viajero = viajeros.get(viajeroACambiar);
+		
 		try {
-			if(!dni.equals("")) {
-				viajeros.get(viajeroACambiar).setDni(dni);
-			}
-			
-			if(!fNacimiento.equals("")) {
-				Date date = sdf.parse(fNacimiento);
-				viajeros.get(viajeroACambiar).setFNaciemiento(date);
-			}
-			
-			if(!nombre.equals("")) {
-				viajeros.get(viajeroACambiar).setNombre(nombre);
-			}
-			
-			if(numAsiento != reserva.getViajeros().get(viajeroACambiar).getNumAsiento() && numAsiento>0 ) {
-				viajeros.get(viajeroACambiar).setNumAsiento(numAsiento);
-			}
+			vuelo.setAeropuerto1(aeropuertoSalida);
+			vuelo.setAeropuerto2(aeropuertoLlegada);
+
 			
 			em.getTransaction().begin();
-			em.merge(viajero);
+			em.merge(vuelo);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();
@@ -112,15 +102,15 @@ public class Reservar {
 		}
 	}
 	
-	public static void borrarReserva(int id) {
+	public static void borrarVuelo(Vuelo vuelo) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
 		
-		Reserva reservaABorrar = em.find(Reserva.class, id);
-		
 		try {
+			Vuelo vueloABorrar = em.find(Vuelo.class, vuelo.getId());
+			
 			em.getTransaction().begin();
-			em.remove(reservaABorrar);
+			em.remove(vueloABorrar);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();
@@ -129,5 +119,22 @@ public class Reservar {
 			em.close();
 			emf.close();
 		}
+	}
+	
+	public static Vuelo encontrarVuelo(int id) {
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
+		EntityManager em = emf.createEntityManager();
+		Vuelo vuelo = new Vuelo();
+		try {
+			vuelo = em.find(Vuelo.class, id);
+
+		}catch(Exception e){
+			System.out.println("error "+e.getMessage());
+		}finally {
+			em.close();
+			emf.close();
+		}
+		
+		return vuelo;		
 	}
 }

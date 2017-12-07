@@ -12,7 +12,11 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Busqueda.findAll", query="SELECT b FROM Busqueda b")
+@NamedQueries({
+	@NamedQuery(name="Busqueda.findAll", query="SELECT b FROM Busqueda b"),
+	@NamedQuery(name="Busqueda.origenYDestisno", query="SELECT b FROM Busqueda b WHERE b.salida=?1 AND b.destino=?2")
+})
+
 public class Busqueda implements Serializable {
 	private static final long serialVersionUID = 1L;
 

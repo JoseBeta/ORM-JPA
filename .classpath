@@ -4,11 +4,12 @@
 	<classpathentry kind="src" path="librerias"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
+			<attribute name="module" value="true"/>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Beta/Desktop/JPA/eclipselink-2.5.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Beta/Desktop/JPA/javax.persistence-2.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Beta/Desktop/JPA/mysql-connector-java-5.0.8-bin.jar"/>
+	<classpathentry kind="lib" path="librerias/eclipselink-2.5.2.jar"/>
+	<classpathentry kind="lib" path="librerias/javax.persistence-2.0.0.jar"/>
+	<classpathentry kind="lib" path="librerias/mysql-connector-java-5.0.8-bin.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

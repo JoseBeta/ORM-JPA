@@ -13,7 +13,11 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Viajero.findAll", query="SELECT v FROM Viajero v")
+@NamedQueries({
+	@NamedQuery(name="Viajero.findAll", query="SELECT v FROM Viajero v"),
+	@NamedQuery(name="Viajero.findByDNI", query="SELECT v FROM Viajero v WHERE v.dni=?1")
+})
+
 public class Viajero implements Serializable {
 	private static final long serialVersionUID = 1L;
 

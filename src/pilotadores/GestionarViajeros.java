@@ -10,28 +10,28 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import conector.Aeropuerto;
+import conector.Busqueda;
 import conector.Reserva;
-import conector.Usuario;
+import conector.Viajero;
 import conector.Vuelo;
 
-public class Registrar {
+public class GestionarViajeros {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public static void registrarse(String fecha, String pass, String nombre) {
+	public static void nuevoViajero(String dni,String fecha, String nombre, int numAsiento) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
 		
 		try {
-			Usuario user = new Usuario();
-			user.setAdmin(false);
+			Viajero viajero = new Viajero();
 			Date date = sdf.parse(fecha);
-			user.setFNacimiento(date);
-			user.setContrasena(pass);
-			user.setNombre(nombre);
+			viajero.setFNaciemiento(date);
+			viajero.setDni(dni);
+			viajero.setNombre(nombre);
+			viajero.setNumAsiento(numAsiento);
 			
 			em.getTransaction().begin();
-			em.persist(user);
+			em.persist(viajero);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();
@@ -42,21 +42,25 @@ public class Registrar {
 		}
 	}
 	
-	public static void modificarUsuario(Usuario user, String fecha, String nombre) {
+	public static void modificarViajero(Viajero viajero, String dni,String fecha, String nombre, int numAsiento) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
 		
 		try {
+			if(!dni.equals("")) {
+				viajero.setDni(dni);
+			}
 			if(!fecha.equals("")) {
 				Date date = sdf.parse(fecha);
-				user.setFNacimiento(date);
+				viajero.setFNaciemiento(date);
 			}
 			if(!nombre.equals("")) {
-				user.setNombre(nombre);
+				viajero.setNombre(nombre);
 			}
-
+			viajero.setNumAsiento(numAsiento);
+			
 			em.getTransaction().begin();
-			em.merge(user);
+			em.merge(viajero);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();
@@ -67,15 +71,15 @@ public class Registrar {
 		}
 	}
 	
-	public static void cambiarContrasena(Usuario user, String pass) {
+	public static void reservar(Viajero viajero, Reserva reserva) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
 		
 		try {
-			user.setContrasena(pass);
-
+			viajero.getReservas().add(reserva);
+			
 			em.getTransaction().begin();
-			em.merge(user);
+			em.remove(viajero);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();
@@ -86,15 +90,15 @@ public class Registrar {
 		}
 	}
 	
-	public static void hacerAdministrador(Usuario user) {
+	public static void borrarViajero(Viajero viajero) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
 		
 		try {
-			user.setAdmin(true);
-
+			Viajero viajeroABorrar = em.find(Viajero.class, viajero.getId());
+			
 			em.getTransaction().begin();
-			em.merge(user);
+			em.remove(viajeroABorrar);
 			em.getTransaction().commit();
 		}catch(Exception e){
 			em.getTransaction().rollback();
@@ -105,22 +109,46 @@ public class Registrar {
 		}
 	}
 	
-	public static void quitarAdministrador(Usuario user) {
+	public static Viajero encontrarViajero(int id) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
-		
+		Viajero viajero = new Viajero();
 		try {
-			user.setAdmin(false);
+			viajero = em.find(Viajero.class, id);
 
-			em.getTransaction().begin();
-			em.merge(user);
-			em.getTransaction().commit();
 		}catch(Exception e){
-			em.getTransaction().rollback();
 			System.out.println("error "+e.getMessage());
 		}finally {
 			em.close();
 			emf.close();
 		}
+		
+		return viajero;		
+	}
+	
+	public static Viajero encontrarViajeroPorDni(String dni) {
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
+		EntityManager em = emf.createEntityManager();
+		
+		Viajero viajero = new Viajero();
+		
+		try {
+			List viajeros;
+			
+			Query q1 = em.createNamedQuery("Viajero.findByDNI");
+			q1.setParameter(1, dni.toLowerCase());
+			viajeros = q1.getResultList();
+			viajero = (Viajero) viajeros.get(0);
+
+
+
+		}catch(Exception e){
+			System.out.println("error: "+e.getMessage());
+		}finally {
+			em.close();
+			emf.close();
+		}
+		
+		return viajero;	
 	}
 }
