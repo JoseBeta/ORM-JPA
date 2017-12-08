@@ -112,4 +112,8 @@ public class GestionarBusquedas {
 		
 		return vuelos;
 	}
+        
+        public static String getPrueba() {
+        return "Funciona!!!!! ";
+    }
 }

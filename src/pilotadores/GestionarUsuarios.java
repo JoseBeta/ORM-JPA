@@ -87,12 +87,12 @@ public class GestionarUsuarios {
 		}
 	}
 	
-	public static void hacerAdministrador(Usuario user) {
+	public static void permisos(Usuario user) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
 		
 		try {
-			user.setAdmin(true);
+			user.setAdmin(!user.getAdmin());
 
 			em.getTransaction().begin();
 			em.merge(user);
@@ -105,25 +105,7 @@ public class GestionarUsuarios {
 			emf.close();
 		}
 	}
-	
-	public static void quitarAdministrador(Usuario user) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
-		EntityManager em = emf.createEntityManager();
-		
-		try {
-			user.setAdmin(false);
 
-			em.getTransaction().begin();
-			em.merge(user);
-			em.getTransaction().commit();
-		}catch(Exception e){
-			em.getTransaction().rollback();
-			System.out.println("error "+e.getMessage());
-		}finally {
-			em.close();
-			emf.close();
-		}
-	}
 	
 	public static void borrarUsuario(Usuario usuario) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
@@ -144,7 +126,7 @@ public class GestionarUsuarios {
 		}
 	}
 	
-	public static Usuario encontrarViajero(int id) {
+	public static Usuario encontrarUsuario(int id) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ORM-JPA");
 		EntityManager em = emf.createEntityManager();
 		Usuario usuario = new Usuario();
